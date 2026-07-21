@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>임직원 직무스트레스 자가진단</title>
+<style>
+  :root{
+    --bg:#F2F4F3;
+    --surface:#FFFFFF;
+    --ink:#1C2626;
+    --ink-soft:#5B6664;
+    --line:#DCE1DF;
+    --navy:#22434A;
+    --navy-deep:#152D33;
+    --teal:#2F6F6B;
+    --teal-soft:#E4EEEC;
+    --good:#3E8F5F;
+    --mid:#C98A3E;
+    --high:#C9622F;
+    --bad:#B84C4C;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:28px 18px 80px;}
+  header.top{
+    background:linear-gradient(135deg,var(--navy-deep),var(--navy));
+    color:#fff;border-radius:14px;padding:26px 24px;margin-bottom:18px;
+    box-shadow:0 8px 24px rgba(21,45,51,.18);
+  }
+  header.top .eyebrow{
+    font-size:12.5px;letter-spacing:.08em;color:#B7D2CE;font-weight:600;
+    text-transform:uppercase;margin-bottom:6px;
+  }
+  header.top h1{margin:0 0 6px;font-size:23px;font-weight:800;letter-spacing:-.01em;}
+  header.top p{margin:0;font-size:13.5px;color:#CFE2DF;}
+
+  .tabs{display:flex;gap:8px;margin-bottom:18px;}
+  .tab-btn{
+    flex:1;padding:12px 10px;border-radius:10px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink-soft);font-size:14.5px;font-weight:700;
+    cursor:pointer;transition:.15s;
+  }
+  .tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:16px;}
+  .card h2{margin:0 0 4px;font-size:16.5px;font-weight:800;}
+  .card .sub{color:var(--ink-soft);font-size:13px;margin-bottom:14px;}
+
+  label.field-label{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:5px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  input[type=text], input[type=number], select{
+    width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:8px;
+    font-size:14.5px;background:#fbfcfc;color:var(--ink);font-family:inherit;
+  }
+  input:focus, select:focus{outline:2px solid var(--teal);outline-offset:1px;}
+  .field{margin-bottom:14px;}
+
+  .domain-block{margin-bottom:22px;}
+  .domain-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .domain-chip{width:9px;height:9px;border-radius:3px;flex:none;}
+  .domain-head h3{margin:0;font-size:15px;font-weight:800;}
+  .domain-head .desc{font-size:12.5px;color:var(--ink-soft);margin-left:auto;text-align:right;max-width:340px;}
+
+  .q-row{border-top:1px solid var(--line);padding:13px 2px;}
+  .q-row:first-of-type{border-top:none;}
+  .q-text{font-size:14px;margin-bottom:9px;}
+  .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+  .opt{position:relative;}
+  .opt input{position:absolute;opacity:0;pointer-events:none;}
+  .opt label{
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    border:1px solid var(--line);border-radius:8px;padding:8px 4px;font-size:12px;
+    color:var(--ink-soft);cursor:pointer;min-height:40px;transition:.12s;
+  }
+  .opt input:checked + label{background:var(--teal);border-color:var(--teal);color:#fff;font-weight:700;}
+
+  .submit-bar{position:sticky;bottom:0;background:linear-gradient(to top, var(--bg) 60%, transparent);padding-top:14px;}
+  button.primary{
+    width:100%;padding:14px;border:none;border-radius:10px;background:var(--navy);
+    color:#fff;font-size:15px;font-weight:800;cursor:pointer;
+  }
+  button.primary:hover{background:var(--navy-deep);}
+  button.ghost{
+    padding:10px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;
+    color:var(--ink);font-size:13.5px;font-weight:700;cursor:pointer;
+  }
+  .warn{background:#FBF0E9;border:1px solid #EBCBAE;color:#8A4E1E;padding:11px 13px;border-radius:9px;font-size:12.5px;margin-bottom:16px;}
+  .notice{background:#EFF6F0;border:1px solid #CFE4D2;color:#2E6B41;padding:10px 13px;border-radius:9px;font-size:13px;margin-bottom:14px;}
+  .err{color:var(--bad);font-size:13px;margin-top:8px;}
+
+  /* result */
+  .score-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--line);}
+  .score-row:first-of-type{border-top:none;}
+  .score-label{width:88px;flex:none;font-size:13.5px;font-weight:800;}
+  .gauge{flex:1;position:relative;}
+  .gauge-track{display:flex;height:16px;border-radius:5px;overflow:hidden;}
+  .zone{flex:none;}
+  .z1{background:#CFE7D6;} .z2{background:#F2E1B8;} .z3{background:#F3CBAE;} .z4{background:#F0BCBC;}
+  .marker{
+    position:absolute;top:-7px;width:2px;height:30px;background:var(--navy-deep);
+    transform:translateX(-1px);z-index:2;
+  }
+  .marker::after{
+    content:attr(data-v);position:absolute;top:-20px;left:50%;transform:translateX(-50%);
+    font-size:11px;font-weight:800;color:var(--navy-deep);white-space:nowrap;
+  }
+  .marker.company{background:#8C6A3B;height:24px;top:-4px;opacity:.9;}
+  .marker.company::after{
+    top:auto;bottom:-18px;color:#8C6A3B;font-weight:700;font-size:10.5px;
+  }
+  .legend{display:flex;gap:16px;font-size:12px;color:var(--ink-soft);margin:2px 0 4px;}
+  .legend span{display:inline-flex;align-items:center;gap:5px;}
+  .legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
+  .band-tag{width:78px;flex:none;text-align:right;font-size:12px;font-weight:700;color:var(--ink-soft);}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th,td{padding:8px 7px;border-bottom:1px solid var(--line);text-align:center;}
+  th{background:#F5F7F6;font-weight:800;color:var(--ink-soft);font-size:12px;}
+  td.left, th.left{text-align:left;}
+
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+  .kpi{background:var(--teal-soft);border-radius:10px;padding:14px;text-align:center;}
+  .kpi .n{font-size:22px;font-weight:800;color:var(--navy-deep);}
+  .kpi .l{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+
+  .hidden{display:none !important;}
+  .loading{text-align:center;color:var(--ink-soft);padding:30px 0;font-size:13.5px;}
+  .toprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px;flex-wrap:wrap;}
+
+  /* admin gate */
+  .gate{max-width:340px;margin:40px auto;text-align:center;}
+  .gate input{text-align:center;letter-spacing:.1em;font-size:16px;margin-bottom:10px;}
+  .gate-err{color:var(--bad);font-size:12.5px;margin-top:6px;min-height:16px;}
+
+  @media (max-width:560px){
+    .grid2, .grid3{grid-template-columns:1fr;}
+    .opts{grid-template-columns:repeat(2,1fr);}
+    header.top h1{font-size:19px;}
+    .domain-head{flex-direction:column;align-items:flex-start;}
+    .domain-head .desc{text-align:left;max-width:100%;margin-left:0;}
+    .kpis{grid-template-columns:1fr 1fr 1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="eyebrow">Job Stress Self-Check · KOSS-SF</div>
+    <h1>임직원 직무스트레스 자가진단</h1>
+    <p>한국형 직무스트레스 측정도구(단축형) 26문항 · 응답은 자동으로 저장·집계됩니다</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBtnSurvey" onclick="switchTab('survey')">📝 설문 작성</button>
+    <button class="tab-btn" id="tabBtnDash" onclick="switchTab('dash')">📊 결과 대시보드</button>
+  </div>
+
+  <!-- ===================== SURVEY TAB ===================== -->
+  <div id="view-survey">
+
+    <div id="surveyForm">
+      <div class="card">
+        <h2>기본 정보</h2>
+        <div class="sub">사업장: <b>(주)에스제이아이</b></div>
+        <div class="grid2">
+          <div class="field">
+            <label class="field-label">부서</label>
+            <select id="f_dept">
+              <option value="">선택</option>
+              <option>IT사업부</option>
+              <option>경영지원팀</option>
+              <option>영업팀</option>
+              <option>전략마케팅실</option>
+              <option>구매그룹</option>
+              <option>글로벌운영그룹</option>
+              <option>물류관리파트</option>
+              <option>개발팀</option>
+              <option>제조1팀</option>
+              <option>품질경영팀</option>
+              <option>제조2팀</option>
+            </select>
+          </div>
+          <div class="field"><label class="field-label">이름</label><input type="text" id="f_name" placeholder="홍길동"></div>
+        </div>
+        <div class="grid3">
+          <div class="field"><label class="field-label">성별</label>
+            <select id="f_gender">
+              <option value="">선택</option>
+              <option value="남">남</option>
+              <option value="여">여</option>
+            </select>
+          </div>
+          <div class="field"><label class="field-label">나이</label><input type="number" id="f_age" min="15" max="90" placeholder="예: 34"></div>
+          <div class="field"><label class="field-label">근무년수</label><input type="number" id="f_tenure" min="0" max="60" placeholder="예: 3"></div>
+        </div>
+      </div>
+
+      <div id="domainsContainer"></div>
+
+      <div class="submit-bar">
+        <button class="primary" onclick="submitSurvey()">제출하고 결과 보기</button>
+        <div id="formErr" class="err hidden"></div>
+      </div>
+    </div>
+
+    <div id="surveyResult" class="hidden"></div>
+  </div>
+
+  <!-- ===================== DASHBOARD TAB ===================== -->
+  <div id="view-dash" class="hidden">
+    <div id="dashGate" class="card gate">
+      <h2>관리자 인증</h2>
+      <div class="sub">응답 취합 결과는 관리자만 열람할 수 있습니다. 관리자 코드를 입력해 주세요.</div>
+      <input type="password" id="gateInput" placeholder="관리자 코드" onkeydown="if(event.key==='Enter')checkGate()">
+      <button class="primary" onclick="checkGate()">확인</button>
+      <div class="gate-err" id="gateErr"></div>
+    </div>
+
+    <div id="dashBody" class="hidden">
+      <div class="warn">⚠ 관리자 코드는 이 페이지 코드에 저장된 간단한 접근 제한이며, 실제 로그인 인증 수준의 보안은 아닙니다. 링크와 코드는 관리자에게만 전달해 주세요.</div>
+      <div class="toprow">
+        <button class="ghost" onclick="loadDashboard()">🔄 새로고침</button>
+        <button class="ghost" onclick="exportCSV()">⬇ CSV로 내보내기</button>
+      </div>
+      <div id="dashContent"><div class="loading">불러오는 중…</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ---------------- data model ---------------- */
+const QUESTIONS = [
+"내 일은 위험하며 사고를 당할 가능성이 있다.",
+"내 업무는 불편한 자세로 오랫동안 일을 해야 한다.",
+"나는 일이 많아 항상 시간에 쫒기며 일한다.",
+"업무량이 현저하게 증가하였다.",
+"업무 수행 중에 충분한 휴식(짬)이 주어진다.",
+"여러 가지일을 동시에 해야 한다.",
+"내 업무는 창의력을 필요로 한다.",
+"내 업무를 수행하기 위해서는 높은 수준의 기술이나 지식이 필요하다.",
+"작업시간, 업무수행과정에서 나에게 결정할 권한이 주어지며 영향력을 행사 할 수 있다.",
+"나의 업무량과 작업스케줄을 스스로 조절할 수 있다.",
+"나의 상사는 업무를 완료하는데 도움을 준다.",
+"나의 동료는 업무를 완료하는데 도움을 준다.",
+"직장에서가 힘들 때 내가 힘들다는 것을 알아주고 이해해 주는 사람이 있다.",
+"직장사정이 불안하여 미래가 불확실하다.",
+"나의 근무조건이나 상황에 바람직하지 못한 변화(예, 구조조정)가 있었거나 있을 것으로 예상된다.",
+"우리 직장은 근무평가, 인사제도(승진, 부서배치 등)가 공정하고 합리적이다.",
+"업무수행에 필요한 인원, 공간, 시설, 장비, 훈련 등의 지원이 잘 이루어지고 있다.",
+"우리 부서와 타 부서간에는 마찰이 없고 업무협조가 잘 이루어진다.",
+"일에 대한 나의 생각을 반영할 수 있는 기회와 통로가 있다.",
+"나의 모든 노력과 업적을 고려할 때, 나는 직장에서 제대로 존중과 신임을 받고 있다.",
+"내 사정이 앞으로 더 좋아질 것을 생각하면 힘든 줄 모르고 일하게 된다.",
+"나의 능력을 개발하고 발휘할 수 있는 기회가 주어진다.",
+"회식자리가 불편하다.",
+"나는 기준이나 일관성이 없는 상태로 업무 지시를 받는다.",
+"직장의 분위기가 권위적이고 수직적이다.",
+"남성, 여성이라는 성적인 차이 때문에 불이익을 받는다."
+];
+const REVERSE = [false,false,false,false,true,false,true,true,true,true,true,true,true,false,false,true,true,true,true,true,true,true,false,false,false,false];
+const OPT_LABELS = ["전혀 그렇지 않다","그렇지 않다","그렇다","매우 그렇다"];
+const COLORS = ['#3B6E8C','#4C7A5B','#8C6A3B','#6B5B95','#9C4F4F','#2F6F6B','#8C3B6B','#5B6472'];
+
+const DOMAINS = [
+ {key:'physEnv',   label:'물리환경',  items:[0,1],       desc:'위험·사고 가능성, 불편한 자세 등 물리적 작업환경 부담'},
+ {key:'jobDemand', label:'직무요구',  items:[2,3,4,5],   desc:'업무량, 시간적 압박, 휴식 부족 등 요구되는 업무 부담'},
+ {key:'jobAutonomy',label:'직무자율', items:[6,7,8,9],   desc:'업무 수행에 대한 의사결정 권한과 재량권 (높을수록 자율성 낮음)'},
+ {key:'conflict',  label:'관계갈등',  items:[10,11,12],  desc:'상사·동료의 지지와 이해 수준 (높을수록 지지 부족)'},
+ {key:'insecurity',label:'직무불안정',items:[13,14],     desc:'고용 및 근무조건의 안정성에 대한 불안'},
+ {key:'orgSystem', label:'조직체계',  items:[15,16,17,18], desc:'인사제도 공정성, 부서간 협조, 의견반영 통로 (높을수록 미흡)'},
+ {key:'reward',    label:'보상부적절',items:[19,20,21],  desc:'노력 대비 존중·보상·성장기회의 적절성 (높을수록 부적절)'},
+ {key:'culture',   label:'직장문화',  items:[22,23,24,25], desc:'회식문화, 업무지시 일관성, 권위적 분위기, 성차별 등'}
+];
+
+// 참고치(4분위 절단값) - 첨부 결과예시 파일 기준
+const REF = {
+ physEnv:   {남:[33.3,44.4,66.6], 여:[33.3,44.4,55.5]},
+ jobDemand: {남:[41.6,50.0,58.3], 여:[50.0,58.3,66.6]},
+ jobAutonomy:{남:[41.6,50.0,66.6], 여:[50.0,58.3,66.6]},
+ conflict:  {남:[null,33.3,44.4], 여:[null,33.3,44.4]},
+ insecurity:{남:[33.3,50.0,66.6], 여:[null,33.3,50.0]},
+ orgSystem: {남:[41.6,50.0,66.6], 여:[41.6,50.0,66.6]},
+ reward:    {남:[33.3,55.5,66.6], 여:[44.4,55.5,66.6]},
+ culture:   {남:[33.3,41.6,50.0], 여:[33.3,41.6,50.0]},
+ total:     {남:[42.4,48.4,54.7], 여:[44.4,50.0,55.6]}
+};
+const BAND_LABELS = ['하위 25%','하위 50%','상위 50%','상위 25%'];
+const COMPANY_NAME = '(주)에스제이아이';
+// 관리자 코드: 대시보드(전체 응답 취합) 열람 시 필요. 필요시 이 값을 원하는 코드로 바꿔서 사용하세요.
+const ADMIN_CODE = 'sji1234';
+// 구글시트(Apps Script) 웹앱 URL - 응답 저장/조회 백엔드
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxxlxb46IMgfYLL9hC3rhaX3S_LBztgN4zKGehSe4ikJOA-W-gKCv4w8Q02nZprxzoE/exec';
+
+// Apps Script 응답을 읽어와야 하므로(POST 저장은 no-cors, 조회는 CORS 우회를 위해 JSONP 사용)
+function jsonp(url){
+  return new Promise((resolve, reject)=>{
+    const cbName = 'cb_' + Math.random().toString(36).slice(2);
+    const timeoutId = setTimeout(()=>{ cleanup(); reject(new Error('timeout')); }, 12000);
+    function cleanup(){
+      clearTimeout(timeoutId);
+      delete window[cbName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+    }
+    window[cbName] = (data)=>{ cleanup(); resolve(data); };
+    const script = document.createElement('script');
+    script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cbName;
+    script.onerror = ()=>{ cleanup(); reject(new Error('jsonp load failed')); };
+    document.body.appendChild(script);
+  });
+}
+
+// 구글시트 원본 행(row) -> 앱 내부에서 쓰는 record 형태로 변환
+function rowToRecord(row){
+  return {
+    submittedAt: row['제출시각'],
+    company: row['사업장'], dept: row['부서'], name: row['이름'],
+    gender: row['성별'], age: row['나이'], tenure: row['근무년수'],
+    domainScores: {
+      physEnv: Number(row['물리환경']), jobDemand: Number(row['직무요구']),
+      jobAutonomy: Number(row['직무자율']), conflict: Number(row['관계갈등']),
+      insecurity: Number(row['직무불안정']), orgSystem: Number(row['조직체계']),
+      reward: Number(row['보상부적절']), culture: Number(row['직장문화'])
+    },
+    totalScore: Number(row['총점'])
+  };
+}
+async function fetchAllRecords(){
+  const data = await jsonp(SHEETS_URL);
+  const rows = (data && data.rows) || [];
+  return rows.map(rowToRecord);
+}
+
+function pointsFor(qIdx, optIdx){ // optIdx 0..3
+  return REVERSE[qIdx] ? [4,3,2,1][optIdx] : [1,2,3,4][optIdx];
+}
+function convScore(indices, answerPoints){
+  const n = indices.length;
+  const sum = indices.reduce((s,i)=>s+answerPoints[i],0);
+  return (sum - n) / (n*3) * 100;
+}
+function bandOf(domainKey, gender, score){
+  const ref = REF[domainKey] && REF[domainKey][gender];
+  if(!ref) return {idx:1,label:'-'};
+  const [q25,q50,q75] = ref;
+  let idx;
+  if(q25!==null && score<=q25) idx=0;
+  else if(score<=q50) idx=1;
+  else if(score<=q75) idx=2;
+  else idx=3;
+  return {idx, label:BAND_LABELS[idx]};
+}
+// 공식 문서 기준: 직무스트레스 총점 = (8개 영역 환산점수의 총합) / 8
+function computeTotal(domainScores){
+  const vals = DOMAINS.map(d=>domainScores[d.key]);
+  return Math.round((vals.reduce((a,b)=>a+b,0)/8)*10)/10;
+}
+
+/* ---------------- build survey form ---------------- */
+function buildSurvey(){
+  const c = document.getElementById('domainsContainer');
+  let html = '';
+  DOMAINS.forEach((d,di)=>{
+    html += `<div class="card domain-block">
+      <div class="domain-head">
+        <span class="domain-chip" style="background:${COLORS[di]}"></span>
+        <h3>${d.label}</h3>
+        <span class="desc">${d.desc}</span>
+      </div>`;
+    d.items.forEach(qIdx=>{
+      html += `<div class="q-row">
+        <div class="q-text">${qIdx+1}. ${QUESTIONS[qIdx]}</div>
+        <div class="opts">`;
+      OPT_LABELS.forEach((lab,oi)=>{
+        html += `<div class="opt">
+          <input type="radio" name="q${qIdx}" id="q${qIdx}_${oi}" value="${oi}">
+          <label for="q${qIdx}_${oi}">${lab}</label>
+        </div>`;
+      });
+      html += `</div></div>`;
+    });
+    html += `</div>`;
+  });
+  c.innerHTML = html;
+}
+buildSurvey();
+
+/* ---------------- submit ---------------- */
+async function submitSurvey(){
+  const errEl = document.getElementById('formErr');
+  errEl.classList.add('hidden');
+
+  const company = COMPANY_NAME;
+  const dept = document.getElementById('f_dept').value;
+  const name = document.getElementById('f_name').value.trim();
+  const gender = document.getElementById('f_gender').value;
+  const age = document.getElementById('f_age').value;
+  const tenure = document.getElementById('f_tenure').value;
+
+  if(!dept || !name || !gender || !age){
+    errEl.textContent = '부서, 이름, 성별, 나이는 필수 입력입니다.';
+    errEl.classList.remove('hidden');
+    window.scrollTo({top:0,behavior:'smooth'});
+    return;
+  }
+
+  const answerPoints = new Array(26).fill(null);
+  for(let i=0;i<26;i++){
+    const sel = document.querySelector(`input[name="q${i}"]:checked`);
+    if(!sel){
+      errEl.textContent = `${i+1}번 문항에 응답하지 않으셨습니다. 모든 문항에 답해 주세요.`;
+      errEl.classList.remove('hidden');
+      const row = sel ? sel.closest('.q-row') : document.getElementById(`q${i}_0`).closest('.q-row');
+      row.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+    answerPoints[i] = pointsFor(i, parseInt(sel.value,10));
+  }
+
+  const domainScores = {};
+  DOMAINS.forEach(d=>{ domainScores[d.key] = Math.round(convScore(d.items, answerPoints)*10)/10; });
+  const totalScore = computeTotal(domainScores);
+
+  const record = {
+    id: Date.now()+'-'+Math.random().toString(36).slice(2,8),
+    company, dept, name, gender, age:Number(age), tenure:tenure?Number(tenure):null,
+    domainScores, totalScore,
+    submittedAt: new Date().toISOString()
+  };
+
+  const btn = document.querySelector('#surveyForm .primary');
+  btn.disabled = true; btn.textContent = '저장 중…';
+
+  try{
+    await fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify(record)
+    });
+  }catch(e){
+    errEl.textContent = '저장 중 오류가 발생했습니다. 네트워크 상태를 확인 후 다시 시도해 주세요.';
+    errEl.classList.remove('hidden');
+    btn.disabled = false; btn.textContent = '제출하고 결과 보기';
+    return;
+  }
+
+  let companyAvg = {n:0, avgDomain:{}, avgTotal:null};
+  try{ companyAvg = await getGenderAverages(gender); }catch(e){ /* 회사평균 조회 실패해도 개인결과는 표시 */ }
+
+  renderPersonalResult(record, companyAvg);
+  document.getElementById('surveyForm').classList.add('hidden');
+  document.getElementById('surveyResult').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// 동성 전체 응답의 영역별 평균(회사평균) 계산 - 구글시트에서 조회
+async function getGenderAverages(gender){
+  const out = {n:0, avgDomain:{}, avgTotal:null};
+  const records = await fetchAllRecords();
+  const buckets = {}; DOMAINS.forEach(d=> buckets[d.key]=[]);
+  const totals = [];
+  records.forEach(rec=>{
+    if(rec.gender !== gender) return;
+    DOMAINS.forEach(d=> buckets[d.key].push(rec.domainScores[d.key]));
+    totals.push(computeTotal(rec.domainScores));
+    out.n++;
+  });
+  DOMAINS.forEach(d=>{
+    out.avgDomain[d.key] = buckets[d.key].length ? Math.round((buckets[d.key].reduce((a,b)=>a+b,0)/buckets[d.key].length)*10)/10 : null;
+  });
+  out.avgTotal = totals.length ? Math.round((totals.reduce((a,b)=>a+b,0)/totals.length)*10)/10 : null;
+  return out;
+}
+
+function renderPersonalResult(r, companyAvg){
+  companyAvg = companyAvg || {n:0, avgDomain:{}, avgTotal:null};
+  const maxIdx = Object.entries(r.domainScores).sort((a,b)=>b[1]-a[1])[0];
+  const maxLabel = DOMAINS.find(d=>d.key===maxIdx[0]).label;
+
+  let rows = '';
+  let tableRows = '';
+  DOMAINS.forEach(d=>{
+    const score = r.domainScores[d.key];
+    const cAvg = companyAvg.avgDomain[d.key];
+    const b = bandOf(d.key, r.gender, score);
+    rows += gaugeRow(d.label, score, r.gender, d.key, cAvg);
+    tableRows += refTableRow(d.label, score, cAvg, r.gender, d.key);
+  });
+  const totalBand = bandOf('total', r.gender, computeTotal(r.domainScores));
+  rows += gaugeRow('총점', computeTotal(r.domainScores), r.gender, 'total', companyAvg.avgTotal, true);
+  tableRows += refTableRow('총점', computeTotal(r.domainScores), companyAvg.avgTotal, r.gender, 'total', true);
+
+  document.getElementById('surveyResult').innerHTML = `
+    <div class="card">
+      <h2>${r.name}님의 직무스트레스 결과</h2>
+      <div class="sub">${r.company} · ${r.dept||'-'} · ${r.gender} · ${r.age}세 · 제출: ${new Date(r.submittedAt).toLocaleString('ko-KR')}</div>
+      <div class="notice">가장 높게 나타난 영역은 <b>${maxLabel}(${maxIdx[1]}점)</b>이며, 전체 총점은 동성 근로자 기준 <b>${totalBand.label}</b>에 해당합니다.${companyAvg.n?` (동성 응답자 ${companyAvg.n}명 기준 회사평균과 함께 표시됩니다)`:''}</div>
+      <div class="legend">
+        <span><i style="background:var(--navy-deep)"></i>본인점수</span>
+        ${companyAvg.n?'<span><i style="background:#8C6A3B"></i>회사평균(동성)</span>':''}
+      </div>
+      ${rows}
+      <div class="sub" style="margin-top:14px;">※ 막대 구간은 전국 근로자 참고치의 하위25% / 하위50% / 상위50% / 상위25% 구간을 실제 점수 비율로 나타낸 것입니다. 점수가 높을수록 해당 영역의 스트레스 요인이 상대적으로 크다는 의미입니다.</div>
+    </div>
+    <div class="card">
+      <h2>참고치 대비 상세표</h2>
+      <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th class="left">항목</th><th>본인점수</th><th>회사평균</th><th>하위25%</th><th>하위50%</th><th>상위50%</th><th>상위25%</th><th>내 위치</th></tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+      </div>
+    </div>
+    <button class="ghost" onclick="location.reload()">↩ 새 설문 작성하기</button>
+  `;
+}
+
+function gaugeRow(label, score, gender, domainKey, companyScore, bold){
+  const ref = REF[domainKey] ? REF[domainKey][gender] : null;
+  const q25 = ref && ref[0]!==null ? ref[0] : 0;
+  const q50 = ref ? ref[1] : 50;
+  const q75 = ref ? ref[2] : 75;
+  const w1 = Math.max(0, q25);
+  const w2 = Math.max(0, q50 - q25);
+  const w3 = Math.max(0, q75 - q50);
+  const w4 = Math.max(0, 100 - q75);
+  const pos = Math.min(99, Math.max(1, score));
+  const b = bandOf(domainKey, gender, score);
+  const companyMarker = (companyScore!=null)
+    ? `<div class="marker company" style="left:${Math.min(99,Math.max(1,companyScore))}%;" data-v="${companyScore}"></div>`
+    : '';
+  return `<div class="score-row">
+    <div class="score-label" style="${bold?'font-weight:900;':''}">${label}</div>
+    <div class="gauge">
+      <div class="gauge-track">
+        <div class="zone z1" style="width:${w1}%"></div><div class="zone z2" style="width:${w2}%"></div><div class="zone z3" style="width:${w3}%"></div><div class="zone z4" style="width:${w4}%"></div>
+      </div>
+      <div class="marker" style="left:${pos}%;" data-v="${score}"></div>
+      ${companyMarker}
+    </div>
+    <div class="band-tag">${b.label}</div>
+  </div>`;
+}
+
+function refTableRow(label, score, companyScore, gender, domainKey, bold){
+  const ref = REF[domainKey] ? REF[domainKey][gender] : [null,null,null];
+  const b = bandOf(domainKey, gender, score);
+  const fmt = v => v==null ? '-' : v;
+  const fmtRange = (lo, hi) => lo==null ? `${hi}이하` : `${lo}~${hi}`;
+  const [q25,q50,q75] = ref;
+  return `<tr>
+    <td class="left" style="${bold?'font-weight:900;':''}">${label}</td>
+    <td><b>${score}</b></td>
+    <td>${fmt(companyScore)}</td>
+    <td>${q25!=null?q25+'이하':'-'}</td>
+    <td>${fmtRange(q25,q50)}</td>
+    <td>${fmtRange(q50,q75)}</td>
+    <td>${q75+'이상'}</td>
+    <td><b>${b.label}</b></td>
+  </tr>`;
+}
+
+/* ---------------- tabs ---------------- */
+function switchTab(tab){
+  document.getElementById('view-survey').classList.toggle('hidden', tab!=='survey');
+  document.getElementById('view-dash').classList.toggle('hidden', tab!=='dash');
+  document.getElementById('tabBtnSurvey').classList.toggle('active', tab==='survey');
+  document.getElementById('tabBtnDash').classList.toggle('active', tab==='dash');
+  if(tab==='dash' && dashUnlocked) loadDashboard();
+}
+
+let dashUnlocked = false;
+function checkGate(){
+  const val = document.getElementById('gateInput').value;
+  const err = document.getElementById('gateErr');
+  if(val === ADMIN_CODE){
+    dashUnlocked = true;
+    document.getElementById('dashGate').classList.add('hidden');
+    document.getElementById('dashBody').classList.remove('hidden');
+    err.textContent = '';
+    loadDashboard();
+  }else{
+    err.textContent = '코드가 올바르지 않습니다.';
+  }
+}
+
+/* ---------------- dashboard ---------------- */
+let LAST_RECORDS = [];
+
+async function loadDashboard(){
+  const el = document.getElementById('dashContent');
+  el.innerHTML = '<div class="loading">불러오는 중…</div>';
+  let records = [];
+  try{
+    records = await fetchAllRecords();
+  }catch(e){
+    el.innerHTML = '<div class="card">응답을 불러오지 못했습니다. 잠시 후 새로고침을 눌러 다시 시도해 주세요.</div>';
+    return;
+  }
+  if(records.length===0){
+    el.innerHTML = '<div class="card">아직 제출된 응답이 없습니다.</div>';
+    return;
+  }
+  LAST_RECORDS = records;
+  renderDashboard(records);
+}
+
+function avg(arr){ return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : null; }
+
+function renderDashboard(records){
+  const el = document.getElementById('dashContent');
+  const male = records.filter(r=>r.gender==='남');
+  const female = records.filter(r=>r.gender==='여');
+
+  const kpis = `<div class="kpis">
+    <div class="kpi"><div class="n">${records.length}</div><div class="l">전체 응답</div></div>
+    <div class="kpi"><div class="n">${male.length}</div><div class="l">남성</div></div>
+    <div class="kpi"><div class="n">${female.length}</div><div class="l">여성</div></div>
+  </div>`;
+
+  function domainTableRows(){
+    let rows = '';
+    DOMAINS.forEach(d=>{
+      const mAvg = avg(male.map(r=>r.domainScores[d.key]));
+      const fAvg = avg(female.map(r=>r.domainScores[d.key]));
+      rows += rowPair(d.label, mAvg, fAvg, d.key);
+    });
+    const mTotal = avg(male.map(r=>computeTotal(r.domainScores)));
+    const fTotal = avg(female.map(r=>computeTotal(r.domainScores)));
+    rows += rowPair('총점', mTotal, fTotal, 'total', true);
+    return rows;
+  }
+  function rowPair(label, mAvg, fAvg, key, bold){
+    const mB = mAvg!=null ? bandOf(key,'남',mAvg) : null;
+    const fB = fAvg!=null ? bandOf(key,'여',fAvg) : null;
+    return `<tr>
+      <td class="left" style="${bold?'font-weight:900;':''}">${label}</td>
+      <td>${mAvg!=null?mAvg.toFixed(1):'-'}</td>
+      <td>${mB?mB.label:'-'}</td>
+      <td>${fAvg!=null?fAvg.toFixed(1):'-'}</td>
+      <td>${fB?fB.label:'-'}</td>
+    </tr>`;
+  }
+
+  function genderSummaryCard(list, totalCount, gender){
+    if(!list.length) return '';
+    const n = list.length;
+    const pct = totalCount ? ((n/totalCount)*100).toFixed(1) : '0.0';
+    const avgTotal = avg(list.map(r=>computeTotal(r.domainScores)));
+    const band = bandOf('total', gender, avgTotal);
+    const domainAvgs = DOMAINS.map(d=>({label:d.label, key:d.key, v:avg(list.map(r=>r.domainScores[d.key]))}));
+    const sorted = domainAvgs.slice().sort((a,b)=>b.v-a.v);
+    const top2 = sorted.slice(0,2).map(d=>`${d.label}(${d.v.toFixed(2)})`).join(', ');
+    const aboveHalf = domainAvgs.filter(d=> bandOf(d.key,gender,d.v).idx>=2).map(d=>d.label);
+    const aboveQ75 = domainAvgs.filter(d=> bandOf(d.key,gender,d.v).idx===3).map(d=>d.label);
+    const sentence2 = aboveHalf.length
+      ? `기준 대비 상위 50% 이상 항목은 ${aboveHalf.join(', ')}이며, 이 중 상위 25% 이상 항목은 ${aboveQ75.length ? aboveQ75.join(', ') : '없는 것으로'} 나타났습니다.`
+      : `기준 대비 상위 50% 이상인 항목은 없는 것으로 나타났습니다.`;
+    return `<div class="card">
+      <h2>${gender}자 직원 요약</h2>
+      <div class="sub">전체응답자 ${totalCount}명 중 ${n}명(${pct}%)이었으며, 전체 총점 평균이 ${avgTotal.toFixed(1)}점으로 <b>${band.label}</b>에 해당합니다.</div>
+      <div class="notice">기준 대비 <b>${top2}</b> 항목의 응답이 가장 높은 수치를 나타냈습니다. ${sentence2}</div>
+    </div>`;
+  }
+  const maleSummary = genderSummaryCard(male, records.length, '남');
+  const femaleSummary = genderSummaryCard(female, records.length, '여');
+
+  const domainTable = `<div class="card">
+    <h2>영역별 평균 점수 (성별 참고치 대비)</h2>
+    <div class="sub">전국 근로자 참고치를 기준으로 우리 조직 평균이 어느 구간에 있는지 보여줍니다.</div>
+    <table>
+      <thead><tr><th class="left">영역</th><th>남 평균</th><th>남 위치</th><th>여 평균</th><th>여 위치</th></tr></thead>
+      <tbody>${domainTableRows()}</tbody>
+    </table>
+  </div>`;
+
+  const listRows = records
+    .slice()
+    .sort((a,b)=> new Date(b.submittedAt) - new Date(a.submittedAt))
+    .map(r=>`<tr>
+      <td class="left">${r.company||'-'}</td>
+      <td class="left">${r.dept||'-'}</td>
+      <td class="left">${r.name||'-'}</td>
+      <td>${r.gender||'-'}</td>
+      <td>${r.age??'-'}</td>
+      <td>${r.tenure??'-'}</td>
+      <td><b>${computeTotal(r.domainScores)}</b></td>
+      <td>${new Date(r.submittedAt).toLocaleDateString('ko-KR')}</td>
+    </tr>`).join('');
+
+  const listTable = `<div class="card">
+    <h2>응답자 목록</h2>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th class="left">사업장</th><th class="left">부서</th><th class="left">이름</th><th>성별</th><th>나이</th><th>근무년수</th><th>총점</th><th>제출일</th></tr></thead>
+      <tbody>${listRows}</tbody>
+    </table>
+    </div>
+  </div>`;
+
+  el.innerHTML = kpis + maleSummary + femaleSummary + domainTable + listTable;
+}
+
+function exportCSV(){
+  if(!LAST_RECORDS.length){ alert('내보낼 데이터가 없습니다.'); return; }
+  const header = ['사업장명','부서','이름','성별','나이','근무년수',
+    ...DOMAINS.map(d=>d.label),'총점','제출일시'];
+  const rows = LAST_RECORDS.map(r=>[
+    r.company, r.dept, r.name, r.gender, r.age, r.tenure,
+    ...DOMAINS.map(d=>r.domainScores[d.key]),
+    computeTotal(r.domainScores), r.submittedAt
+  ]);
+  const csv = [header, ...rows]
+    .map(row => row.map(v=>`"${(v??'').toString().replace(/"/g,'""')}"`).join(','))
+    .join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `직무스트레스_응답_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
